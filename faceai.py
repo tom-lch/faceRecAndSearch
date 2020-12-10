@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, redirect
-from logic import searchFromMilvus, GetImageArr, faceDetAndEncodingToSQL, detectionFace, EncodingFace, detectionAndEncodingFace
-
+from logic import SearchFromMilvusByArr, faceDetAndEncodingToSQLAndMilvus, detectionFace, EncodingFace, detectionAndEncodingFace, Delete_collection_from_milvus
+from pkg import GetImageArr
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
@@ -10,13 +10,13 @@ app = Flask(__name__)
 def FaceSearchSample():
       url = request.form["url"]
       imgArr, _ = GetImageArr(url)
-      return searchFromMilvus(imgArr)
+      return SearchFromMilvusByArr(imgArr)
 
-@app.route("/faceDetAndEncodeByURLToSQL", methods=["POST"])
-def FaceDetAndEncodeByURLToSQL():
+@app.route("/faceDetAndEncodeByURLToSQLAndMilvus", methods=["POST"])
+def FaceDetAndEncodeByURLToSQLAndMilvus():
       url = request.form["url"]
       imgArr, imagePath = GetImageArr(url)
-      return faceDetAndEncodingToSQL(imgArr, imagePath, url)
+      return faceDetAndEncodingToSQLAndMilvus(imgArr, imagePath, url)
 
 
 @app.route("/faceDetByURL", methods=["POST"])
@@ -44,10 +44,10 @@ def FaceDetAndEncodeByURL():
       imgArr, _ = GetImageArr(url)
       return detectionAndEncodingFace(imgArr)
 
-# @app.route("/deleteSQL", methods=["POST"])
-# def DeleteSQL():
-#       name = request.form["name"]
-#       _delete_collection_from_milvus(name)
+@app.route("/deleteSQL", methods=["POST"])
+def DeleteSQL():
+      name = request.form["name"]
+      Delete_collection_from_milvus(name)
 
 
 
