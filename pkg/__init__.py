@@ -1,0 +1,1 @@
+from .store2milvus import FaceMilvus
