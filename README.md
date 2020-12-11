@@ -28,3 +28,5 @@ curl --data 'name=faceai' localhost:8801/deleteSQL
 ```
 python example.py
 ```
+
+![WangBingbing][./image/1607664239160.jpg]
