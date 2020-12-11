@@ -1,13 +1,13 @@
 from milvus import Milvus, DataType
 
 class FaceMilvus:
-      def __init__(self, host='localhost', port='19530', collection_name='demo_films'):
+      def __init__(self, host='localhost', port='19530', collection_name='face_infos'):
             self.collection = None
             self.collection_name = collection_name
             self.client = Milvus(host=host, port=port)
             self.collection_param = {
                                     "fields": [
-                                          {"name": "imgInfoID", "type": DataType.INT32},
+                                          {"name": "imgID", "type": DataType.INT64},
                                           {"name": "imgEncoding", "type": DataType.FLOAT_VECTOR, "params": {"dim": 128}}
                                     ],
                                     "segment_row_limit": 100000,
@@ -15,6 +15,7 @@ class FaceMilvus:
                                     }
             self.collection = self.collection if self.collection  else self._create_collection()
       def _create_collection(self):
+            print(self.client.list_collections())
             if self.collection_name in self.client.list_collections() :
                   return 
             return self.client.create_collection(self.collection_name, self.collection_param)
@@ -25,12 +26,12 @@ class FaceMilvus:
       def Delete(self, collection_name):
             self._delete_collection(collection_name)
 
-      def Insert(self, imgInfoID, imgEncoding):
+      def Insert(self, imgID, imgEncoding):
             hybrid_entities = [
                                     # {"name": "duration", "values": list_of_int, "type": DataType.INT32},
                                     # {"name": "release_year", "values": list_of_int, "type": DataType.INT64},
                                     # {"name": "embedding", "values": vectors, "type":DataType.FLOAT_VECTOR},
-                                    {"name": "imgInfoID", "values": [imgInfoID], "type": DataType.INT32},
+                                    {"name": "imgID", "values": [imgID], "type": DataType.INT64},
                                     {"name": "imgEncoding", "values": [imgEncoding],"type": DataType.FLOAT_VECTOR}
                               ]
             ids = self.client.insert(self.collection_name, hybrid_entities)
@@ -80,7 +81,7 @@ class FaceMilvus:
                   }
             }
 
-            entities_list = self.client.search(self.collection_name, query_hybrid, fields=["imgInfoID"])
+            entities_list = self.client.search(self.collection_name, query_hybrid, fields=["imgID"])
             results = []
             for entities in entities_list:
                   for topk_film in entities:
@@ -88,10 +89,10 @@ class FaceMilvus:
                         current_entity = topk_film.entity
                         print("- id: {}".format(topk_film.id))
                         print("- distance: {}".format(topk_film.distance))
-                        print("- imgInfoID: {}".format(current_entity.imgInfoID))
+                        print("- imgID: {}".format(current_entity.imgID))
                         result["id"] = topk_film.id
                         result["distance"] = topk_film.distance
-                        result["imgInfoID"] = current_entity.imgInfoID
+                        result["imgID"] = current_entity.imgID
                         results.append(result)
             return results
 

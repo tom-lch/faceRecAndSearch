@@ -1,9 +1,9 @@
 from sql import FaceMilvus
 
-milvusClient = FaceMilvus(collection_name='faceai')
+milvusClient = FaceMilvus(collection_name='face_infos')
 
-def Store2Milvus(imgInfoID, imgEncoding):
-      ids = milvusClient.Insert(imgInfoID, imgEncoding)
+def Store2Milvus(imgID, imgEncoding):
+      ids = milvusClient.Insert(imgID, imgEncoding)
 
 def SearchFromMilvus(imgEncoding):
       info = milvusClient.Search(imgEncoding)

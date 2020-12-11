@@ -1,6 +1,8 @@
 from PIL import Image
 import numpy as np
 from pkg import GenName, DownloadImageByUrl
+
+
 def GetImageArr(url):
       # 根据图片URL用于人脸识别
       # 使用生成的名字下载图片在本地

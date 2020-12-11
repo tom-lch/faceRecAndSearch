@@ -1,4 +1,4 @@
 from .downlondImage import DownloadImageByUrl
 from .genName import GenName
-from .genUUID import GenUUID
+from .genID import GenID
 from .getImageArr import GetImageArr
