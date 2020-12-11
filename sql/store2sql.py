@@ -3,15 +3,15 @@ import re
 
 class FaceaiMySQL:
 
-      def __init__(self, host="localhost", port="3306", user="root", pwd="123456", dbname="faceai", tables=["face_02",]):
-            self.DB = self._connect_sql(host, user, pwd, dbname)
+      def __init__(self, host="localhost", port="3306", user="root", pwd="123456", dbname="faceai", tables=["face_infos",]):
+            self.DB = self._connect_sql(host, port, user, pwd, dbname)
             self.cursor = self.DB.cursor()
             self._db_exists(dbname)
             for table in tables:
                   self._table_exists(table)
 
-      def _connect_sql(self, host, user, pwd, dbname):
-            return pymysql.connect(host, user, pwd, dbname)
+      def _connect_sql(self, host, port, user, pwd, dbname):
+            return pymysql.connect(host, port, user, pwd, dbname)
 
       def _db_exists(self, dbname):
             sql = "show databases"
