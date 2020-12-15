@@ -1,7 +1,7 @@
 from milvus import Milvus, DataType
 
 class FaceMilvus:
-      def __init__(self, host='localhost', port='19530', collection_name='face_infos'):
+      def __init__(self, host='localhost', port='19530', collection_name='face_info'):
             self.collection = None
             self.collection_name = collection_name
             self.client = Milvus(host=host, port=port)
@@ -87,9 +87,9 @@ class FaceMilvus:
                   for topk_film in entities:
                         result = {}
                         current_entity = topk_film.entity
-                        print("- id: {}".format(topk_film.id))
-                        print("- distance: {}".format(topk_film.distance))
-                        print("- imgID: {}".format(current_entity.imgID))
+                        # print("- id: {}".format(topk_film.id))
+                        # print("- distance: {}".format(topk_film.distance))
+                        # print("- imgID: {}".format(current_entity.imgID))
                         result["id"] = topk_film.id
                         result["distance"] = topk_film.distance
                         result["imgID"] = current_entity.imgID

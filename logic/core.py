@@ -17,7 +17,8 @@ def faceDetAndEncodingToSQLAndMilvus(ImageArr, imagePath, imageUrl):
             # 需要修改： 由于Milvus目前不支持存储string类型，需要将string存储到另外的数据库中，将该ID传入milvus
             # imgInfoID = storeImageImfo(imagePath, imageUrl, img_location)
             imgInfoID = GenID() # 在这里同样将 img_encoding img_location  imageUrl imagePath 保存到mysql 并返回能检索到的ID
-            table = "face_infos"
+            table = "face_info"
+            print("开始插入")
             id, bl = Store2mysql(table, str(imgInfoID), imagePath, imageUrl, img_location)
             if bl == False :
                   return jsonify({"state": "error mysql插入报错", "ids": None})
@@ -40,7 +41,7 @@ def SearchFromMilvusByArr(ImageArr):
                   imgID = val["imgID"]
                   ids.append(imgID)
                   # 根据imgID 从mysql中获取图片信息
-                  res = SelectInfoFromMySQL("face_infos" ,int(imgID), None)
+                  res = SelectInfoFromMySQL("face_info" ,int(imgID), None)
                   colls[str(imgID)] = res
             infos[str(i)] = info
             imageInfos[str(i)] = colls

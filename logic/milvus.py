@@ -1,6 +1,6 @@
 from sql import FaceMilvus
 
-milvusClient = FaceMilvus(collection_name='face_infos')
+milvusClient = FaceMilvus(collection_name='face_info')
 
 def Store2Milvus(imgID, imgEncoding):
       ids = milvusClient.Insert(imgID, imgEncoding)
