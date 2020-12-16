@@ -2,7 +2,7 @@
 
 ```
 # 启动web端
-python faceai.pi
+python faceai.py
 ```
 
 使用curl调用服务验证API
