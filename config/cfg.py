@@ -2,7 +2,7 @@ config = dict(
       milvus = dict (
             host = "localhost",
             port = "19530",
-            collection_name = "face_info",
+            collection_name = "face_test1",
       ),
       mysql = dict (
             host = "localhost",
@@ -10,7 +10,7 @@ config = dict(
             user = "root",
             pwd = "123456",
             dbname = "faceai",
-            tables =["face_info",],
-            table = "face_info"
+            tables =["face_test1",],
+            table = "face_test1"
       ),
 )

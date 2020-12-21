@@ -9,14 +9,19 @@ app = Flask(__name__)
 @app.route("/faceSearchSample", methods=["POST"])
 def FaceSearchSample():
       url = request.form["url"]
+      # table = request.form["table"]
+      table = "face_test1"
       imgArr, _ = GetImageArr(url)
       return SearchFromMilvusByArr(imgArr)
 
 @app.route("/faceDetAndEncodeByURLToSQLAndMilvus", methods=["POST"])
 def FaceDetAndEncodeByURLToSQLAndMilvus():
       url = request.form["url"]
+      photoWeb = request.form["photoWeb"]
+      # table = request.form["table"]
+      table = "face_test1"
       imgArr, imagePath = GetImageArr(url)
-      return faceDetAndEncodingToSQLAndMilvus(imgArr, imagePath, url)
+      return faceDetAndEncodingToSQLAndMilvus(imgArr, imagePath, url, photoWeb, table)
 
 
 @app.route("/faceDetByURL", methods=["POST"])

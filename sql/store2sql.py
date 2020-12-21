@@ -4,7 +4,12 @@ import time
 class FaceaiMySQL:
 
       def __init__(self, host="localhost",  user="root", pwd="123456", dbname="faceai", tables=["",]):
-            self.DB = self._connect_sql(host, user, pwd, dbname)
+            self.host = host
+            self.user = user
+            self.pwd = pwd
+            self.dbname = dbname
+            self.tables = tables
+            self.DB = self._connect_sql()
             self.cursor = self.DB.cursor()
             self._db_exists(dbname)
             for table in tables:
@@ -12,8 +17,8 @@ class FaceaiMySQL:
             # 开一个线程保持对mysql的连接 不可直调用。
             # self._activate()
 
-      def _connect_sql(self, host, user, pwd, dbname):
-            return pymysql.connect(host, user, pwd, dbname)
+      def _connect_sql(self):
+            return pymysql.connect(self.host, self.user, self.pwd, self.dbname)
 
       def _db_exists(self, dbname):
             sql = "show databases"
@@ -53,14 +58,16 @@ class FaceaiMySQL:
                         print("UnSuccessfully added table")
 
       def _createTable(self, table):
-            sql = f"create table if not exists `{table}` (`id` int auto_increment primary key, `img_info_id` VARCHAR(20),`img_path` VARCHAR(64),`img_url` VARCHAR(256), `img_location` VARCHAR(64))character set utf8;"
+            sql = f"create table if not exists `{table}` (`id` int auto_increment primary key, `img_info_id` VARCHAR(20),`img_path` VARCHAR(64),`img_url` VARCHAR(256), `img_location` VARCHAR(64), `photo_web` VARCHAR(64))character set utf8;"
+            self._get_conn()
             self.cursor.execute(sql)
             self.DB.commit()
 
-      def InsertImage(self, table, img_info_id, img_path, img_url, img_location):
-            sql = f"INSERT INTO {table}(img_info_id,img_path, img_url, img_location) VALUES ('{img_info_id}', '{img_path}', '{img_url}', '{img_location}')"
+      def InsertImage(self, table, img_info_id, img_path, img_url, img_location, photo_web):
+            sql = f"INSERT INTO {table}(img_info_id,img_path, img_url, img_location, photo_web) VALUES ('{img_info_id}', '{img_path}', '{img_url}', '{img_location}', '{photo_web}')"
             try:  
                   print(sql)
+                  self._get_conn()
                   self.cursor.execute(sql)
                   # 提交到数据库执行
                   self.DB.commit()
@@ -77,6 +84,7 @@ class FaceaiMySQL:
             if img_id:
                   sql = f"SELECT * FROM {table} WHERE id={img_id};"
             try:
+                  self._get_conn()
                   self.cursor.execute(sql)
                   # 提交到数据库执行
                   results = self.cursor.fetchall()
@@ -85,11 +93,12 @@ class FaceaiMySQL:
             except:
                   return []
 
-      def UpdateImage(self, table, img_path, img_url, img_location, img_info_id):            
+      def UpdateImage(self, table, img_path, img_url, img_location, img_info_id, photo_web):            
             sql = f"""
-                  UPDATE {table} SET img_path {img_path}, img_url {img_url},  img_location {img_location} WHERE img_info_id={img_info_id};
+                  UPDATE {table} SET img_path {img_path}, img_url {img_url},  img_location {img_location}, photo_web {photo_web} WHERE img_info_id={img_info_id};
             """
             try:
+                  self._get_conn()
                   self.cursor.execute(sql)
                   # 提交到数据库执行
                   self.DB.commit()
@@ -101,17 +110,25 @@ class FaceaiMySQL:
             if img_id:
                   sql = f"DELETE FROM {table} WHERE id={img_id}"
             try:
+                  self._get_conn()
                   self.cursor.execute(sql)
                   # 提交到数据库执行
                   self.DB.commit()
                   print("insert success")
             except:
                   self.DB.rollback()
-      def _activate(self):
-            # 保持与mysql的链接，每5个小时链接一次mysql、
-            while True:
-                  time.sleep(3600*5)
-                  sql = "SELECR * from faceai where id = 1;"
-                  res = self.cursor.execute(sql)
-                  print(res)
+
+      def _get_conn(self):
+            if self.DB is not None:
+                  try:
+                        self.DB.ping(True)
+                        return 
+                  except Exception as e:
+                        logging.exception(e)
+            try:
+                  self.DB = self._connect_sql()
+                  self.cursor = self.DB.cursor()
+                  return
+            except Exception as e:
+                  logging.exception(e)
 

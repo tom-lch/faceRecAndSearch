@@ -1,15 +1,16 @@
 import face_recognition
 from flask import jsonify
-from .milvus import Store2Milvus, SearchFromMilvus
+from .milvus import Store2Milvus, SearchFromMilvus #NewMilvusCLient
 from .mysql import Store2mysql, SelectInfoFromMySQL
 from pkg import GenID
 import random
 
-def faceDetAndEncodingToSQLAndMilvus(ImageArr, imagePath, imageUrl):
+def faceDetAndEncodingToSQLAndMilvus(ImageArr, imagePath, imageUrl, photoWeb, table):
       img_encodings = face_recognition.face_encodings(ImageArr)
       img_locations = face_recognition.face_locations(ImageArr)
       imgs = {}
       ids = {}
+      #NewMilvusCLient(table)
       for i in range(len(img_locations)):
             img_encoding = img_encodings[i]
             img_location = str(img_locations[i])[1:-1]
@@ -17,9 +18,8 @@ def faceDetAndEncodingToSQLAndMilvus(ImageArr, imagePath, imageUrl):
             # 需要修改： 由于Milvus目前不支持存储string类型，需要将string存储到另外的数据库中，将该ID传入milvus
             # imgInfoID = storeImageImfo(imagePath, imageUrl, img_location)
             imgInfoID = GenID() # 在这里同样将 img_encoding img_location  imageUrl imagePath 保存到mysql 并返回能检索到的ID
-            table = "face_info"
             print("开始插入")
-            id, bl = Store2mysql(table, str(imgInfoID), imagePath, imageUrl, img_location)
+            id, bl = Store2mysql(table, str(imgInfoID), imagePath, imageUrl, img_location, photoWeb)
             if bl == False :
                   return jsonify({"state": "error mysql插入报错", "ids": None})
             Store2Milvus(id, img_encoding)
@@ -32,6 +32,7 @@ def SearchFromMilvusByArr(ImageArr):
       infos = {}
       imageInfos = {}
       idss = []
+      #NewMilvusCLient(table)
       for i in range(len(img_encodings)):
             img_encoding = img_encodings[i]
             info = SearchFromMilvus(img_encoding)
@@ -41,7 +42,7 @@ def SearchFromMilvusByArr(ImageArr):
                   imgID = val["imgID"]
                   ids.append(imgID)
                   # 根据imgID 从mysql中获取图片信息
-                  res = SelectInfoFromMySQL("face_info" ,int(imgID), None)
+                  res = SelectInfoFromMySQL("face_test1" ,int(imgID), None)
                   colls[str(imgID)] = res
             infos[str(i)] = info
             imageInfos[str(i)] = colls

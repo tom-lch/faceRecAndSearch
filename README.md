@@ -12,7 +12,7 @@ python faceai.py
 curl --data "url=http://upload.mnw.cn/2020/0922/1600761074390.jpg" localhost:8802/faceDetByURL
 
 # 获取人脸编码
-curl --data "url=http://upload.mnw.cn/2020/0922/1600761074390.jpg" localhost:8802/faceEncodeByUR
+curl --data "url=http://upload.mnw.cn/2020/0922/1600761074390.jpg" localhost:8802/faceEncodeByURL
 
 # 将人脸编码存入 SQL And Milvus
 curl --data "url=http://upload.mnw.cn/2020/0922/1600761074390.jpg" localhost:8802/faceDetAndEncodeByURLToSQLAndMilvus

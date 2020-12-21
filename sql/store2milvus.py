@@ -1,7 +1,7 @@
 from milvus import Milvus, DataType
 
 class FaceMilvus:
-      def __init__(self, host='localhost', port='19530', collection_name='face_info'):
+      def __init__(self, host='localhost', port='19530', collection_name='face_test1'):
             self.collection = None
             self.collection_name = collection_name
             self.client = Milvus(host=host, port=port)
@@ -74,7 +74,7 @@ class FaceMilvus:
                         "must": [
                               {
                               "vector": {
-                                    "imgEncoding": {"topk": 3, "query": [imgEncoding], "metric_type": "L2"}
+                                    "imgEncoding": {"topk": 10, "query": [imgEncoding], "metric_type": "L2"}
                               }
                               }
                         ]
