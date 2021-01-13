@@ -7,4 +7,5 @@ def read_yaml():
             file_content = f.read()
       conf = yaml.load(file_content, yaml.FullLoader)
       print(conf)
+      return conf
 
