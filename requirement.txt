@@ -1,0 +1,9 @@
+pyyaml
+flask
+pprint
+pymilvus
+numpy
+pillow
+requests
+uuid
+pymysql
