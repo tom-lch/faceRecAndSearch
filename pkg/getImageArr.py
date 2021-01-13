@@ -25,7 +25,7 @@ def StoreAndDel():
       name = GenName() 
       hour = int(time.time()) // 3600
       path = "/apps/Storage/tmp/image/" + str(hour)
-      if CreateFolder(path) == 0:
+      if CreateFolder(path) == 1:
             DeleteFolder("/apps/Storage/tmp/image/" + str(hour-1))
       StorePath = path + "/" + name + ".jpg" # 后期调整成从配置文件读取路径
       return StorePath
@@ -35,7 +35,6 @@ def CreateFolder(folder_name):
       folder_name_exist = os.path.exists(folder_name)
       if not folder_name_exist:
             os.makedirs(folder_name)
-      if not os.path.exists(folder_name):
             result_data = 1
       return result_data
 
