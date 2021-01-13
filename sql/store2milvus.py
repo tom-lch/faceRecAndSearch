@@ -1,7 +1,7 @@
 from milvus import Milvus, DataType
 
 class FaceMilvus:
-      def __init__(self, host='localhost', port='19530', collection_name='face_test1'):
+      def __init__(self, host='localhost', port='19530', collection_name='face_encode'):
             self.collection = None
             self.collection_name = collection_name
             self.client = Milvus(host=host, port=port)
@@ -26,7 +26,7 @@ class FaceMilvus:
       def Delete(self, collection_name):
             self._delete_collection(collection_name)
 
-      def Insert(self, imgID, imgEncoding):
+      def Insert(self, imgID, imgEncoding, collection_name):
             hybrid_entities = [
                                     # {"name": "duration", "values": list_of_int, "type": DataType.INT32},
                                     # {"name": "release_year", "values": list_of_int, "type": DataType.INT64},
@@ -34,7 +34,7 @@ class FaceMilvus:
                                     {"name": "imgID", "values": [imgID], "type": DataType.INT64},
                                     {"name": "imgEncoding", "values": [imgEncoding],"type": DataType.FLOAT_VECTOR}
                               ]
-            ids = self.client.insert(self.collection_name, hybrid_entities)
+            ids = self.client.insert(collection_name, hybrid_entities)
             self.Flush()
             return ids
       
@@ -51,7 +51,7 @@ class FaceMilvus:
             self.client.drop_index(self.collection_name, index_name)
 
 
-      def Search(self, imgEncoding, partition_tags=None, fields=None, timeout=None):
+      def Search(self, imgEncoding, collection_name, partition_tags=None, fields=None, timeout=None):
             # dsl = {
             #             "bool": {
             #                   "must":[
@@ -81,7 +81,7 @@ class FaceMilvus:
                   }
             }
 
-            entities_list = self.client.search(self.collection_name, query_hybrid, fields=["imgID"])
+            entities_list = self.client.search(collection_name, query_hybrid, fields=["imgID"])
             results = []
             for entities in entities_list:
                   for topk_film in entities:

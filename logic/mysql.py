@@ -1,8 +1,13 @@
 from sql import FaceaiMySQL
 import logging
-
+from config.cfg import Config
 # 使用mysql目前存在问题
-mysqlClient = FaceaiMySQL(tables=["face_test1", ])
+mysqlClient = FaceaiMySQL(host=Config["mysql"]["host"], 
+                        port=Config["mysql"]["port"], 
+                        user=Config["mysql"]["user"], 
+                        pwd=Config["mysql"]["pwd"],
+                        dbname=Config["mysql"]["dbname"], 
+                        tables=Config["mysql"]["tables"])
 
 def Store2mysql(table, img_info_id, img_path, img_url, img_location, photoWeb):
       id, bl = mysqlClient.InsertImage(table, img_info_id, img_path, img_url, img_location, photoWeb)

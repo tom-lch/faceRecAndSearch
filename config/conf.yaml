@@ -1,0 +1,13 @@
+milvus:
+  host: 0.0.0.0
+  port: 19530
+  collection_name: "face_encode"
+mysql:
+  host: 192.168.1.100
+  port: 4000
+  user: "root"
+  pwd: 
+  dbname: "faceai"
+  tables:
+    - face_rec_info
+  table: face_rec_info

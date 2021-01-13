@@ -1,10 +1,13 @@
 import pymysql
 import re
 import time
+
+
 class FaceaiMySQL:
 
-      def __init__(self, host="localhost",  user="root", pwd="123456", dbname="faceai", tables=["",]):
+      def __init__(self, host="localhost", port="3306", user="root", pwd="123456", dbname="faceai", tables=["",]):
             self.host = host
+            self.port = port
             self.user = user
             self.pwd = pwd
             self.dbname = dbname
@@ -18,7 +21,7 @@ class FaceaiMySQL:
             # self._activate()
 
       def _connect_sql(self):
-            return pymysql.connect(self.host, self.user, self.pwd, self.dbname)
+            return pymysql.connect(self.host, self.user, self.pwd, self.dbname, self.port)
 
       def _db_exists(self, dbname):
             sql = "show databases"

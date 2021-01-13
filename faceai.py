@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request, redirect
 from logic import SearchFromMilvusByArr, faceDetAndEncodingToSQLAndMilvus, detectionFace, EncodingFace, detectionAndEncodingFace, Delete_collection_from_milvus
 from pkg import GetImageArr
+from config.cfg import Config
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
 
 
 app = Flask(__name__)
@@ -10,18 +12,20 @@ app = Flask(__name__)
 def FaceSearchSample():
       url = request.form["url"]
       # table = request.form["table"]
-      table = "face_test1"
+      collection_name = Config["milvus"]["collection_name"]
+      table = Config["mysql"]["table"]
       imgArr, _ = GetImageArr(url)
-      return SearchFromMilvusByArr(imgArr)
+      return SearchFromMilvusByArr(imgArr, table, collection_name)
 
 @app.route("/faceDetAndEncodeByURLToSQLAndMilvus", methods=["POST"])
 def FaceDetAndEncodeByURLToSQLAndMilvus():
       url = request.form["url"]
       photoWeb = request.form["photoWeb"]
       # table = request.form["table"]
-      table = "face_test1"
+      table = Config["mysql"]["table"]
+      collection_name = Config["milvus"]["collection_name"]
       imgArr, imagePath = GetImageArr(url)
-      return faceDetAndEncodingToSQLAndMilvus(imgArr, imagePath, url, photoWeb, table)
+      return faceDetAndEncodingToSQLAndMilvus(imgArr, imagePath, url, photoWeb, table, collection_name)
 
 
 @app.route("/faceDetByURL", methods=["POST"])

@@ -5,9 +5,9 @@ from .mysql import Store2mysql, SelectInfoFromMySQL
 from pkg import GenID
 import random
 
-def faceDetAndEncodingToSQLAndMilvus(ImageArr, imagePath, imageUrl, photoWeb, table):
+def faceDetAndEncodingToSQLAndMilvus(ImageArr, imagePath, imageUrl, photoWeb, table, collection_name):
       img_encodings = face_recognition.face_encodings(ImageArr)
-      img_locations = face_recognition.face_locations(ImageArr)
+      img_locations = face_recognition.face_locations(ImageArr, model="cnn")
       imgs = {}
       ids = {}
       #NewMilvusCLient(table)
@@ -22,12 +22,12 @@ def faceDetAndEncodingToSQLAndMilvus(ImageArr, imagePath, imageUrl, photoWeb, ta
             id, bl = Store2mysql(table, str(imgInfoID), imagePath, imageUrl, img_location, photoWeb)
             if bl == False :
                   return jsonify({"state": "error mysql插入报错", "ids": None})
-            Store2Milvus(id, img_encoding)
+            Store2Milvus(id, img_encoding, collection_name)
             ids[i] = (id, imgInfoID)
       return jsonify({"state": "OK", "ids": ids})
 
 
-def SearchFromMilvusByArr(ImageArr):
+def SearchFromMilvusByArr(ImageArr, table, collection):
       img_encodings = face_recognition.face_encodings(ImageArr)
       infos = {}
       imageInfos = {}
@@ -35,14 +35,14 @@ def SearchFromMilvusByArr(ImageArr):
       #NewMilvusCLient(table)
       for i in range(len(img_encodings)):
             img_encoding = img_encodings[i]
-            info = SearchFromMilvus(img_encoding)
+            info = SearchFromMilvus(img_encoding, collection)
             colls = {}
             ids = []
             for val in info:
                   imgID = val["imgID"]
                   ids.append(imgID)
                   # 根据imgID 从mysql中获取图片信息
-                  res = SelectInfoFromMySQL("face_test1" ,int(imgID), None)
+                  res = SelectInfoFromMySQL(table ,int(imgID), None)
                   colls[str(imgID)] = res
             infos[str(i)] = info
             imageInfos[str(i)] = colls
@@ -52,7 +52,7 @@ def SearchFromMilvusByArr(ImageArr):
 
 def detectionAndEncodingFace(ImageArr):
       img_encodings   = face_recognition.face_encodings(ImageArr)
-      img_locations = face_recognition.face_locations(ImageArr)
+      img_locations = face_recognition.face_locations(ImageArr, model="cnn")
       imgs = {}
       for i in range(len(img_locations)):
             images = {}
@@ -72,7 +72,7 @@ def EncodingFace(ImageArr):
       return jsonify({"img":imgs})
 
 def detectionFace(ImageArr):
-      img_locations = face_recognition.face_locations(ImageArr)
+      img_locations = face_recognition.face_locations(ImageArr, model="cnn")
       imgs = {}
       for i in range(len(img_locations)):
             images = {}
