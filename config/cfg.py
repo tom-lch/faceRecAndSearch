@@ -7,7 +7,7 @@ def read_yaml(file):
       print(conf)
       return conf
 
-Config = read_yaml('conf.yaml')
+Config = read_yaml('./conf.yaml')
 
 
 
